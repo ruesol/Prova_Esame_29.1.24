@@ -106,6 +106,26 @@ namespace Test
             Assert.That(() => source.IntersectOn(Other(), "pippo").ToArray(),
             Throws.TypeOf<ArgumentException>());
         }
-
+        /*
+         * 4. Input della chiamata sotto test:
+            source è la seguente sequenza di funzioni da interi a booleani
+            • la funzione che restituisce sempre vero
+            • la funzione che solleva ArgumentException sugli argomenti multipli di 2 e restituisce vero
+            sugli altri valori
+            • la funzione che restituisce vero sugli argomenti minori di 7
+            other è la seguente sequenza di funzioni da interi a booleani
+            • la funzione che restituisce sempre falso
+            • la funzione che restituisce vero sugli argomenti minori di 10
+            • la funzione che restituisce vero sugli argomenti multipli di 5
+            p è 666.
+            Output atteso: la sequenza false , null , true
+        */
+        [Test]
+        public void Test4()
+        {
+            var source = new Func<int, bool>[] { x => true, x => x % 2 == 0 ? throw new ArgumentException() : true, x => x < 7 };
+            var other = new Func<int, bool>[] { x => false, x => x < 10, x => x % 8 == 0 };
+            Assert.That(source.IntersectOn(other, 666), Is.EqualTo(new bool?[] { false, null, true }));
+        }
     }
 }
